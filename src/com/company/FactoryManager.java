@@ -7,7 +7,14 @@ public class FactoryManager {
     private static int minWaste = Integer.MAX_VALUE;
     private static List<List<Integer>> result = new ArrayList();
 
-    static void detectMachinesToStart(List<Integer> machinesCapacity, int targetCapacity, List partialSolution, int temporarySum) {
+    /**
+     * Determine which machines should be started.
+     * @param machinesCapacity - what is the capacity of each machine
+     * @param targetCapacity - the capacity required to fulfill per minute
+     * @param partialSolution - partial solutions that deliver with minimum waste
+     * @param temporarySum - a temporary capacity sum which initial should be 0
+     */
+    static void detectMachinesToStart(List<Integer> machinesCapacity, int targetCapacity, List<Integer> partialSolution, int temporarySum) {
         //minimum waste is 0/met
         if (temporarySum == targetCapacity) {
             if (minWaste > 0) {
@@ -37,17 +44,20 @@ public class FactoryManager {
                 remainingMachines.add(machinesCapacity.get(j));
             }
             //create new object from partial solution
-            List<Integer> partialTemp = new ArrayList<Integer>(partialSolution);
+            List<Integer> partialTemp = new ArrayList(partialSolution);
             partialTemp.add(capacity);
 
             temporarySum += capacity;
-            //
+            // initially add the capacity - which will be removed afterwards for recursivity
             detectMachinesToStart(remainingMachines, targetCapacity, partialTemp, temporarySum);
             // substract afterwards to avoid processing sum every time
             temporarySum -= capacity;
         }
     }
 
+    /**
+     * Display the machines to be started and what is their waste.
+     */
     public static void showMachinesToStart() {
         IOUtil.writeSolutionOutput(result, minWaste);
     }
